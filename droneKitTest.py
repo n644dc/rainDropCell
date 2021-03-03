@@ -27,6 +27,4 @@ print( "System status: %s" % vehicle.system_status.state)
 print( "Mode: %s" % vehicle.mode.name)    # settable
 print( "Armed: %s" % vehicle.armed)    # settable
 
-print( "\nPrint all parameters (iterate `vehicle.parameters`):")
-for key, value in vehicle.parameters.iteritems():
-    print(" Key:%s Value:%s" % (key,value))
+
