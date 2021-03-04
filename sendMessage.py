@@ -1,8 +1,10 @@
 #!/bin/python3
 
 import os
+import sys
 import time
 import json
+import base64
 from Hologram.HologramCloud import HologramCloud
 from vehicleData import Vehicle
 
@@ -15,7 +17,9 @@ hologram = HologramCloud(dict(), network='cellular')
 try:
     conn_result = hologram.network.connect()
 except Exception as e:
-    pass
+    print("Cannot Connect to Cell Network")
+    print(str(e)) 
+    sys.exit(0)
 
 
 if conn_result == False:
@@ -23,14 +27,22 @@ if conn_result == False:
 print("Connected to Cell Network")
 
 
+print("Querying Vehicle")
 vehicle = Vehicle()
-vd = vehicle.getAllVehicleData()
-vehicleDataJson = json.dumps(vd)
+try:
+    vd = vehicle.getAllVehicleData()
+    vehicleDataJson = json.dumps(vd) 
+except Exception as e:
+    print("Error Occured Querying Vehicle")
+    print(str(e))
+    hologram.network.disconnect()
+    sys.exit(0)
 
+jsonBytes = str(vehicleDataJson).encode("ascii") 
+base64Bytes = base64.b64encode(jsonBytes) 
+jsonStringBase64 = base64Bytes.decode("ascii") 
 
-requestType = "VEHICLE_DATA"
-requestBody = vehicleDataJson
-payload = {"rainDropId": rainDropId, "requestType": requestType, "requestBody": requestBody}
+payload = {"rainDropId": rainDropId, "requestType": "VEHICLE_DATA", "requestBody": jsonStringBase64}
 
 
 print("sending Message...")
