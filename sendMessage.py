@@ -14,6 +14,13 @@ rainDropId = "rd0"
 
 hologram = HologramCloud(dict(), network='cellular')
 
+messageType = sys.argv[1]
+acceptableMessageTypes = ["register", "sendVehicleData"]
+if messageType not in acceptableMessageTypes:
+    print("Invalid Message Type")
+    sys.exit(0)
+
+
 try:
     conn_result = hologram.network.connect()
 except Exception as e:
@@ -30,15 +37,16 @@ print("Connected to Cell Network")
 print("Querying Vehicle")
 vehicle = Vehicle()
 try:
-    vd = vehicle.getAllVehicleData()
-    vehicleDataJson = json.dumps(vd) 
+    
+    vehicleDataJson = vehicle.queryVehicleDataToJson(rainDropId)
 except Exception as e:
     print("Error Occured Querying Vehicle")
     print(str(e))
     hologram.network.disconnect()
     sys.exit(0)
 
-jsonBytes = str(vehicleDataJson).encode("ascii") 
+# vehicleDataJson = json.dumps({"test": "ok"})
+jsonBytes = str(vehicleDataJson).encode("ascii")
 base64Bytes = base64.b64encode(jsonBytes) 
 jsonStringBase64 = base64Bytes.decode("ascii") 
 

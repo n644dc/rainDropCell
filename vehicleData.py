@@ -8,10 +8,11 @@ class Vehicle:
     def __init__(self):
         pass
     
-    def getAllVehicleData(self):
+    def getAllVehicleData(self, rainDropId):
         vehicle = connect('/dev/serial0', wait_ready=True, baud=921600)
 
         self.lastDataSnapshot = [
+            {"dropId":                rainDropId},
             {"px4_autopilot_version": str(vehicle.version)},
             {"autopilot_ftp":         str(vehicle.capabilities.ftp)},
             {"globalLoc":             str(vehicle.location.global_frame)},
@@ -36,3 +37,8 @@ class Vehicle:
             {"armed":                 str(vehicle.armed)}
         ]
         return self.lastDataSnapshot
+        
+    def queryVehicleDataToJson(self, rainDropId):
+        vd = self.getAllVehicleData(rainDropId)
+        return json.dumps(vd)
+        
