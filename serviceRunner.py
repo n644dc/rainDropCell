@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 import time
+import logging
 from subprocess import Popen, PIPE
 import sys, os, glob
+
 
 class ProcRun:
   def __init__(self):
@@ -12,29 +14,35 @@ class ProcRun:
     out, err = proc.communicate()
     return out.decode("utf-8"), err.decode("utf-8")
 
-
-
+print("############## serviceRunner now running ###############")
+logging.basicConfig(filename='serviceRunner.log', level=logging.DEBUG)
 run = True
 
 procRun = ProcRun()
 print("-Running registration send")
-output, err = procRun.runCmd("sudo python3 sendMessage.py register")
+logging.debug("-Running registration send")
+output, err = procRun.runCmd("sudo python3 sendMessage.py register &")
 print("Registration Results")
 print("stdout: "+output)
-print("ERR: "+err)
+print(err)
+logging.debug("Registration Results")
+logging.debug("stdout: "+output)
+logging.debug(err)
 
 # Every 4 minutes - send vehicle data to server via hologram. 
 while run:
-    print("Sleeping for 4 minutes")
-    time.sleep(240)
+    print("Sleeping for 10s.")
+    logging.debug("Sleeping for 10s.")
+    time.sleep(10)
     try:
         print("-Running Vehicle Data Send")
-        output, err = proc.runCmd("sudo python3 sendMessage.py sendVehicleData")
+        logging.debug('sending vehicle data...')
+        output, err = procRun.runCmd("sudo python3 sendMessage.py sendVehicleData &")
         print("Data Send Results")
         print("stdout: "+output)
-        print("ERR: "+err)
+        print(err)
     except Exception as e:
-        print("Error Occured. Halting.")
+        print("Error Occured. Halting.") 
         print(str(e))
         sys.exit(0)
     

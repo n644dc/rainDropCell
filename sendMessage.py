@@ -5,11 +5,13 @@ import sys
 import time
 import json
 import base64
+import logging
 from Hologram.HologramCloud import HologramCloud
 from vehicleData import Vehicle
 
 
 erisCloudTestKey = "6cc9647209d1f184552da4ae39f12443410313d262676ac3428f68547792a16e"
+logging.basicConfig(filename='sendMessage.log', level=logging.DEBUG)
 rainDropId = "rd0"
 
 
@@ -26,12 +28,16 @@ except Exception as e:
     sys.exit(0)
 
 # Setup Hologram
+print("Connecting to cell network")
+logging.info("Connecting to cell network")
 hologram = HologramCloud(dict(), network='cellular')
 try:
     conn_result = hologram.network.connect()
 except Exception as e:
     print("Cannot Connect to Cell Network")
-    print(str(e)) 
+    print(str(e))
+    logging.info("Cannot Connect to Cell Network")
+    logging.info(str(e))
     sys.exit(0)
 
 if conn_result == False:

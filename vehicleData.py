@@ -1,3 +1,5 @@
+import json
+import time
 from dronekit import connect
 
 
@@ -34,7 +36,8 @@ class Vehicle:
             {"isArmable":             str(vehicle.is_armable)},
             {"systemStatus":          str(vehicle.system_status.state)},
             {"mode":                  str(vehicle.mode.name)},
-            {"armed":                 str(vehicle.armed)}
+            {"armed":                 str(vehicle.armed)},
+            {"timestamp":             str(time.time())
         ]
         return self.lastDataSnapshot
         
